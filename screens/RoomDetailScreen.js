@@ -11,12 +11,12 @@ import {
   ScrollView,
   Platform
 } from 'react-native';
-import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import MapView, { Marker } from 'react-native-maps';
 import { AuthContext } from '../context/AuthContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+ư
 const RoomDetailScreen = ({ route, navigation }) => {
   const { roomId } = route.params;
   const [room, setRoom] = useState(null);
@@ -63,14 +63,14 @@ const RoomDetailScreen = ({ route, navigation }) => {
       navigation.navigate("Login");
       return;
     }
-
+  
     try {
       const bookingRef = collection(db, 'bookings');
       await addDoc(bookingRef, {
         roomId,
         bookingDate: selectedDate.toISOString(),  // Chỉ lưu ngày đặt phòng
         userId: currentUser.uid, // Nếu bạn muốn lưu ID người dùng
-        createdAt: new Date().toISOString(),
+        createdAt: serverTimestamp(), // Sử dụng serverTimestamp để lưu thời gian hiện tại
       });
       
       Alert.alert(

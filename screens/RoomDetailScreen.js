@@ -16,7 +16,7 @@ import { db } from '../firebaseConfig';
 import MapView, { Marker } from 'react-native-maps';
 import { AuthContext } from '../context/AuthContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
-ư
+
 const RoomDetailScreen = ({ route, navigation }) => {
   const { roomId } = route.params;
   const [room, setRoom] = useState(null);

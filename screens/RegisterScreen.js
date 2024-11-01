@@ -1,8 +1,10 @@
 // screens/RegisterScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, StyleSheet, ImageBackground } from 'react-native';
+import { TextInput, Button, Text, Appbar } from 'react-native-paper';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -18,13 +20,87 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
-      <Text>Register</Text>
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
-      <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
-      <Button title="Register" onPress={handleRegister} />
-    </View>
+    <ImageBackground
+      source={{ uri: 'https://img.freepik.com/free-vector/purple-fluid-background_53876-99561.jpg?semt=ais_hybrid://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAxL3Jhd3BpeGVsX29mZmljZV8yOF9pbGx1c3RyYXRpb25fb2ZfdG9reW9fbWluaW1hbF93YWxscGFwZXJfX2NvbF9jNjkwNjNhZC1mMTY3LTQ4NmYtYWRmMC1jMTE4YWM1NjJjMmRfMS5qcGc.jpg' }}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Appbar.Header style={styles.appbar}>
+          <Appbar.Content title="Create an Account" titleStyle={styles.title} />
+        </Appbar.Header>
+        <TextInput
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          mode="outlined"
+          left={<TextInput.Icon icon={() => <MaterialIcons name="email" size={20} />} />}
+        />
+        <TextInput
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          style={styles.input}
+          mode="outlined"
+          left={<TextInput.Icon icon={() => <MaterialIcons name="lock" size={20} />} />}
+        />
+        <Button mode="contained" onPress={handleRegister} style={styles.registerButton} labelStyle={styles.buttonText}>
+          Register
+        </Button>
+        <Button mode="text" onPress={() => navigation.navigate('Login')} style={styles.loginButton}>
+          Already have an account? Login
+        </Button>
+      </View>
+    </ImageBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  container: {
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    marginHorizontal: 16,
+  },
+  appbar: {
+    backgroundColor: 'transparent',
+    elevation: 0,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#6200ea',
+  },
+  input: {
+    marginBottom: 16,
+  },
+  registerButton: {
+    marginTop: 16,
+    borderRadius: 25,
+    paddingVertical: 8,
+    backgroundColor: '#6200ea',
+    shadowColor: '#6200ea',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  loginButton: {
+    marginTop: 16,
+    textAlign: 'center',
+    fontWeight: '600',
+    color: '#6200ea',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
 export default RegisterScreen;

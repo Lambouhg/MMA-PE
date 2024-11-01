@@ -1,7 +1,7 @@
 // screens/LoginScreen.js
 import React, { useState } from 'react';
 import { View, StyleSheet, ImageBackground } from 'react-native';
-import { TextInput, Button, Text, Appbar } from 'react-native-paper';
+import { TextInput, Button, Text, Appbar, Snackbar } from 'react-native-paper';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -9,19 +9,24 @@ import { MaterialIcons } from '@expo/vector-icons';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [visible, setVisible] = useState(false);
 
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigation.navigate('RoomList');
     } catch (error) {
-      console.error("Login error:", error.message);
+      setErrorMessage(error.message);
+      setVisible(true);
     }
   };
 
+  const onDismissSnackBar = () => setVisible(false);
+
   return (
     <ImageBackground
-      source={{ uri: 'https://example.com/background.jpg' }}
+      source={{ uri: 'https://img.freepik.com/free-vector/purple-fluid-background_53876-99561.jpg?semt=ais_hybrid://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAxL3Jhd3BpeGVsX29mZmljZV8yOF9pbGx1c3RyYXRpb25fb2ZfdG9reW9fbWluaW1hbF93YWxscGFwZXJfX2NvbF9jNjkwNjNhZC1mMTY3LTQ4NmYtYWRmMC1jMTE4YWM1NjJjMmRfMS5qcGc.jpg' }}
       style={styles.background}
       resizeMode="cover"
     >
@@ -53,6 +58,16 @@ const LoginScreen = ({ navigation }) => {
           Don't have an account? Register
         </Button>
       </View>
+      <Snackbar
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: 'Close',
+          onPress: onDismissSnackBar,
+        }}
+      >
+        {errorMessage}
+      </Snackbar>
     </ImageBackground>
   );
 };
@@ -65,7 +80,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     marginHorizontal: 16,
   },
   appbar: {
@@ -80,16 +95,13 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 16,
+    backgroundColor: 'white',
   },
   loginButton: {
     marginTop: 16,
     borderRadius: 25,
     paddingVertical: 8,
     backgroundColor: '#6200ea',
-    shadowColor: '#6200ea',
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
   },
   registerButton: {
     marginTop: 16,

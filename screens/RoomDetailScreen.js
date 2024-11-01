@@ -321,8 +321,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   amenityText: {
-    color: '#666',
+    color: '#333',
     fontSize: 14,
+    fontWeight: 'bold',
   },
   dateButton: {
     flexDirection: 'row',
@@ -368,6 +369,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  
 });
 
 export default RoomDetailScreen;

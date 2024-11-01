@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, Feather, FontAwesome5 } from '@expo/vector-icons';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { AuthContext } from '../context/AuthContext';
+import { BlurView } from 'expo-blur';
+
+const { width } = Dimensions.get('window');
 
 const RoomListScreen = ({ navigation }) => {
   const [rooms, setRooms] = useState([]);
@@ -33,26 +36,47 @@ const RoomListScreen = ({ navigation }) => {
       onPress={() => navigation.navigate('RoomDetail', { roomId: item.id })}
       style={styles.cardContainer}
     >
-      <View style={styles.card}>
+      <BlurView intensity={20} style={styles.card}>
         <Image 
           source={{ uri: item.image }} 
           style={styles.cardImage} 
-          blurRadius={1}
+          blurRadius={2}
         />
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.8)']}
           style={styles.overlay}
         />
         <View style={styles.cardContent}>
-          <Text style={styles.locationText}>{item.location}</Text>
-          <Text style={styles.priceText}>${item.price}/night</Text>
+          <View style={styles.cardHeader}>
+            <View>
+              <Text style={styles.locationText}>
+                <Feather name="map-pin" size={18} color="white" /> {item.location}
+              </Text>
+              <Text style={styles.priceText}>
+                <FontAwesome5 name="money-bill-wave" size={16} color="#e0e0e0" /> ${item.price}/night
+              </Text>
+            </View>
+            
+          </View>
+
           <Text 
             style={styles.descriptionText} 
             numberOfLines={2}
           >
-            {item.description}
+            <MaterialIcons name="description" size={16} color="#e0e0e0" /> {item.description}
           </Text>
+          
           <View style={styles.cardFooter}>
+            <View style={styles.amenities}>
+              <View style={styles.amenityItem}>
+                <Ionicons name="bed" size={18} color="white" />
+                <Text style={styles.amenityText}>2 Beds</Text>
+              </View>
+              <View style={styles.amenityItem}>
+                <Ionicons name="wifi" size={18} color="white" />
+                <Text style={styles.amenityText}>Free WiFi</Text>
+              </View>
+            </View>
             <TouchableOpacity 
               style={styles.detailButton}
               onPress={() => navigation.navigate('RoomDetail', { roomId: item.id })}
@@ -62,7 +86,7 @@ const RoomListScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </BlurView>
     </TouchableOpacity>
   );
 
@@ -72,10 +96,17 @@ const RoomListScreen = ({ navigation }) => {
         colors={['#6a11cb', '#2575fc']}
         style={styles.header}
       >
-        <Text style={styles.headerTitle}>Rooms</Text>
-        <TouchableOpacity onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color="white" />
-        </TouchableOpacity>
+        <View style={styles.headerContent}>
+          <View>
+            <Text style={styles.headerTitle}>Rooms</Text>
+            <Text style={styles.headerSubtitle}>
+              <Ionicons name="home" size={16} color="white" /> Find your perfect stay
+            </Text>
+          </View>
+          <TouchableOpacity onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
       </LinearGradient>
       
       <FlatList
@@ -95,17 +126,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 20,
   },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   headerTitle: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
+  },
+  headerSubtitle: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 20,
+    marginTop: 5,
   },
   listContainer: {
     paddingHorizontal: 15,
@@ -125,7 +163,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: '100%',
-    height: 200,
+    height: 220,
     position: 'absolute',
   },
   overlay: {
@@ -138,13 +176,25 @@ const styles = StyleSheet.create({
   cardContent: {
     padding: 15,
     justifyContent: 'flex-end',
-    height: 200,
+    height: 220,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   locationText: {
     color: 'white',
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 5,
+    alignItems: 'center',
+  },
+  favoriteIcon: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 20,
+    padding: 8,
   },
   priceText: {
     color: '#e0e0e0',
@@ -158,7 +208,21 @@ const styles = StyleSheet.create({
   },
   cardFooter: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  amenities: {
+    flexDirection: 'row',
+  },
+  amenityItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  amenityText: {
+    color: 'white',
+    fontSize: 12,
+    marginLeft: 5,
   },
   detailButton: {
     flexDirection: 'row',
